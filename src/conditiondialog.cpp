@@ -942,7 +942,8 @@ bool ConditionDialog::warnIfBad(Condition cond)
             uint64_t underground =
                     (1ULL << (dripstone_caves-128)) |
                     (1ULL << (lush_caves-128)) |
-                    (1ULL << (deep_dark-128));
+                    (1ULL << (deep_dark-128)) |
+                    (1ULL << (sulfur_caves-128));
             if ((m & underground) && cond.y > 246)
             {
                 int button = warn(this, tr("Bad Surface Height"),
