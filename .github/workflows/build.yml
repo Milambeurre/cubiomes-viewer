@@ -1,0 +1,72 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Startet den Build, sobald du ein Tag erstellst, das mit "v" beginnt (z.B. v1.0.0)
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            qt-version: '5.15.2'
+          - os: windows-latest
+            qt-version: '5.15.2'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive # Holt automatisch das wichtige "cubiomes" Submodul
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: ${{ matrix.qt-version }}
+          host: ${{ matrix.os == 'windows-latest' && 'windows' || 'linux' }}
+          target: 'desktop'
+          arch: ${{ matrix.os == 'windows-latest' && 'win64_msvc2019_64' || '' }}
+
+      # Build für Linux (Ubuntu)
+      - name: Build (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev
+          qmake cubiomes-viewer.pro
+          make
+          # Verpackt die ausführbare Datei (sucht im Root und im bin-Ordner)
+          if [ -f "cubiomes-viewer" ]; then
+            tar -czvf cubiomes-viewer-linux.tar.gz cubiomes-viewer
+          elif [ -f "bin/cubiomes-viewer" ]; then
+            tar -czvf cubiomes-viewer-linux.tar.gz bin/cubiomes-viewer
+          fi
+
+      # Build für Windows
+      - name: Build (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: cmd
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          qmake cubiomes-viewer.pro
+          nmake
+          # Sucht die .exe (egal ob im Hauptverzeichnis, in "release" oder "bin") und zippt sie
+          powershell "Get-ChildItem -Path . -Filter cubiomes-viewer.exe -Recurse | Compress-Archive -DestinationPath cubiomes-viewer-windows.zip"
+
+      # Lädt die fertigen Dateien automatisch in das GitHub-Release hoch
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            cubiomes-viewer-linux.tar.gz
+            cubiomes-viewer-windows.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
