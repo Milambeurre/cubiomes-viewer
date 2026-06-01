@@ -91,7 +91,7 @@ win32-msvc*: {
         src/cubiomes_util.c \
         $$CUPATH/quadbase.c
 } else {
-    QMAKE_PRE_LINK      += $(MAKE) -C $$CUPATH -f makefile CC=\"$$QMAKE_CC\" CFLAGS=\"$(CFLAGS) $$QMAKE_CFLAGS\" $$CUTARGET
+    QMAKE_PRE_LINK      += $(MAKE) -C \"$$CUPATH\" -f makefile CC=\"$$QMAKE_CC\" CFLAGS=\"$(CFLAGS) $$QMAKE_CFLAGS\" $$CUTARGET
     QMAKE_CLEAN         += $$CUPATH/*.o $$CUPATH/libcubiomes.a
     LIBS                += $$CUPATH/libcubiomes.a -lm
 }
