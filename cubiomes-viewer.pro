@@ -88,7 +88,7 @@ win32-msvc*: {
         $$CUPATH/biomenoise.c \
         $$CUPATH/generator.c \
         $$CUPATH/finders.c \
-        $$CUPATH/util.c \
+        src/cubiomes_util.c \
         $$CUPATH/quadbase.c
 } else {
     QMAKE_PRE_LINK      += $(MAKE) -C $$CUPATH -f makefile CC=\"$$QMAKE_CC\" CFLAGS=\"$(CFLAGS) $$QMAKE_CFLAGS\" $$CUTARGET
