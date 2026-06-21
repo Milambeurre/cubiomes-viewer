@@ -10,14 +10,14 @@ main releases up to 1.21.
 
 ## Download
 
-Precompiled binaries can be found in the [releases section](https://github.com/Cubitect/cubiomes-viewer/releases)
+Precompiled binaries can be found in the [releases section](https://github.com/linussztuka2011/cubiomes-viewer/releases)
 on GitHub. This includes single file executables, which are statically
 linked against [Qt](https://www.qt.io).
 
-A Flatpak for the tool is available on
+(Not updated, not forked) A Flatpak for the tool is available on
 [Flathub](https://flathub.org/apps/details/com.github.cubitect.cubiomes-viewer).
 
-For Arch Linux users, the tool may be found in the
+(Not updated, not forked) For Arch Linux users, the tool may be found in the
 [AUR](https://aur.archlinux.org/packages/cubiomes-viewer) thanks to
 [JakobDev](https://github.com/JakobDev).
 
