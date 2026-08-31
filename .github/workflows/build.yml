@@ -17,9 +17,6 @@ jobs:
       matrix:
         os: [windows-latest]
         include:
-          - os: ubuntu-latest
-            qt-version: '5.15.2'
-            artifact: cubiomes-viewer-linux.tar.gz
           - os: windows-latest
             qt-version: '5.15.2'
             artifact: cubiomes-viewer-windows.zip
@@ -98,6 +95,13 @@ jobs:
           )
           windeployqt --dir cubiomes-viewer cubiomes-viewer\cubiomes-viewer.exe --compiler-runtime --no-translations --no-system-d3d-compiler --no-opengl-sw --no-angle
           7z a -tzip "${{ matrix.artifact }}" cubiomes-viewer\
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cubiomes-viewer-windows
+          path: cubiomes-viewer-windows.zip
+          if-no-files-found: error
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
