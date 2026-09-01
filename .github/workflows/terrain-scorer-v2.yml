@@ -1,0 +1,44 @@
+name: Terrain Scorer V2
+
+on:
+  workflow_dispatch:
+
+jobs:
+  score-terrain:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository and Cubiomes
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build Cubiomes library
+        run: |
+          make -C cubiomes clean
+          make -C cubiomes
+
+      - name: Compile terrain scorer V2
+        run: |
+          gcc terrain_scorer_v2.c cubiomes/libcubiomes.a \
+            -I cubiomes \
+            -O3 \
+            -fwrapv \
+            -lm \
+            -o terrain_scorer_v2
+
+      - name: Run terrain scorer V2
+        run: |
+          ./terrain_scorer_v2 seeds_8633.txt classement_v2.csv
+
+      - name: Show top 25
+        run: |
+          echo "Top 25 candidates:"
+          head -n 26 classement_v2.csv
+
+      - name: Upload terrain ranking V2
+        uses: actions/upload-artifact@v4
+        with:
+          name: terrain-ranking-v2
+          path: classement_v2.csv
+          if-no-files-found: error
